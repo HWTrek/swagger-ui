@@ -34,16 +34,7 @@
 
   <script type="text/javascript">
     $(function () {
-      var url = location.protocol + '//' + location.host + location.pathname + "spec/swagger.json";
-
-      hljs.configure({
-        highlightSizeThreshold: 5000
-      });
-
-      // Pre load translate...
-      if(window.SwaggerTranslator) {
-        window.SwaggerTranslator.translate();
-      }
+      var url = location.protocol + '//' + location.host + location.pathname+ 'spec/Message.json';
       window.swaggerUi = new SwaggerUi({
         url: url,
         dom_id: "swagger-ui-container",
@@ -52,36 +43,27 @@
           if(typeof initOAuth == "function") {
             initOAuth({
               clientId: "your-client-id",
-              clientSecret: "your-client-secret-if-required",
               realm: "your-realms",
-              appName: "your-app-name",
-              scopeSeparator: ",",
-              additionalQueryStringParams: {}
+              appName: "your-app-name"
             });
           }
-
-          if(window.SwaggerTranslator) {
-            window.SwaggerTranslator.translate();
-          }
+          $('pre code').each(function(i, e) {
+            hljs.highlightBlock(e)
+          });
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
         },
         docExpansion: "none",
-        jsonEditor: false,
-        defaultModelRendering: 'schema',
-        showRequestHeaders: false,
-        useJQuery: true
+        apisSorter: "alpha"
       });
-
       window.swaggerUi.load();
-
       function log() {
         if ('console' in window) {
           console.log.apply(console, arguments);
         }
       }
-  });
+    });
   </script>
 </head>
 
@@ -90,7 +72,11 @@
   <div class="swagger-ui-wrap">
     <a id="logo" href="http://swagger.io"><img class="logo__img" alt="swagger" height="30" width="30" src="images/logo_small.png" /><span class="logo__title">swagger</span></a>
     <form id='api_selector'>
-      <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
+      <!-- ref: https://gist.github.com/ponelat/a51fe50481f8b7a31038*/ -->
+      <div class="input">
+        <select id="input_baseUrl" name="baseUrl">
+        </select>
+      </div>
       <div id='auth_container'></div>
       <div class='input'><a id="explore" class="header__btn" href="#" data-sw-translate>Explore</a></div>
     </form>
@@ -99,5 +85,17 @@
 
 <div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;</div>
 <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+<script>
+  var url = location.protocol + '//' + location.host + location.pathname+ 'spec/';
+
+  var spec = {
+    'Message':  url + "Message.json"
+  };
+  var sel = $('#input_baseUrl');
+  $.each(spec,function(key,val){
+    var opt = $('<option>').prop('value', val).html(key);
+    sel.append(opt);
+  });
+</script>
 </body>
 </html>
